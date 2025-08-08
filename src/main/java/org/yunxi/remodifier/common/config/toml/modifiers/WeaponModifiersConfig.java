@@ -17,7 +17,7 @@ public class WeaponModifiersConfig {
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-        BUILDER.push("Modifiers for tools");
+        BUILDER.push("Modifiers for weapons");
         BUILDER.comment("This configuration file is based on index. it means, 'legendary' -> '30' ->'generic.attack_damage;generic.attack_speed' -> '0.15;0.1' -> '2;2' is the first index, and in it, 'generic.attack_damage' -> '0.15' -> '2', 'generic.attack_speed' -> '0.1' -> '2'", "You may need to make a resource pack to save the customization-required translation key for the attributes if the mod author didn't do that, or your customization on other mods' attribute may not look well", "A hint on the translation key format: attribute.modxxx.attributexxx, e.g. attribute.minecraft.generic.attack_damage");
         NAMES = BUILDER.comment("The name of the modifier").defineList("NAMES", Lists.newArrayList(), o -> true);
         WEIGHTS = BUILDER.comment("The weight of the modifier in the modifiers pool").defineList("WEIGHTS", Lists.newArrayList(), o -> true);
