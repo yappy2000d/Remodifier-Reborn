@@ -6,9 +6,11 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.tags.ItemTags;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.yunxi.remodifier.Remodifier;
+import org.yunxi.remodifier.common.util.ModTags;
 import org.yunxi.remodifier.common.config.toml.ReModifierConfig;
 import org.yunxi.remodifier.common.config.toml.modifiers.*;
 
@@ -31,18 +33,20 @@ public class Modifiers {
     public static final ModifierPool armorPool = new ModifierPool(stack -> stack.getItem() instanceof ArmorItem || CuriosModifiersConfig.WHETHER_OR_NOT_CURIOS_USE_ARMOR_MODIFIERS.get() && Remodifier.CURIO_PROXY.isModifiableCurio(stack));
 
     public static final ModifierPool toolPool = new ModifierPool(stack -> {
-        Item item = stack.getItem();
-        if (WeaponModifiersConfig.WHETHER_OR_NOT_WEAPON_USE_TOOL_MODIFIERS.get() && item instanceof SwordItem) return true;
-        return item instanceof DiggerItem;
+        if (WeaponModifiersConfig.WHETHER_OR_NOT_WEAPON_USE_TOOL_MODIFIERS.get() && isValidWeapon(stack)) return true;
+        return stack.getItem() instanceof DiggerItem;
     });
 
     public static final ModifierPool weaponPool = new ModifierPool(stack -> {
-        Item item = stack.getItem();
         if (!WeaponModifiersConfig.WHETHER_OR_NOT_WEAPON_USE_TOOL_MODIFIERS.get()) {
-            return item instanceof SwordItem;
+            return isValidWeapon(stack);
         }
         return false;
     });
+
+    public static boolean isValidWeapon(ItemStack item) {
+        return item.is(ModTags.Items.WEAPON_ITEMS);
+    }
 
     public static final ModifierPool bowPool = new ModifierPool(stack -> stack.getItem() instanceof ProjectileWeaponItem);
 

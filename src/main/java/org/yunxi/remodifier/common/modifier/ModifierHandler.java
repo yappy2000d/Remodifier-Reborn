@@ -33,11 +33,24 @@ public class ModifierHandler {
     public static Modifier rollModifier(ItemStack stack, Random random) {
         if (!canHaveModifiers(stack)) return null;
         if (!CuriosModifiersConfig.WHETHER_OR_NOT_CURIOS_USE_ARMOR_MODIFIERS.get() && Modifiers.curioPool.isApplicable.test(stack)) return Modifiers.curioPool.roll(stack, random);
-        if (Modifiers.toolPool.isApplicable.test(stack)) return Modifiers.toolPool.roll(stack, random);
+
+        boolean isTool = Modifiers.toolPool.isApplicable.test(stack);
+        boolean isWeapon = !WeaponModifiersConfig.WHETHER_OR_NOT_WEAPON_USE_TOOL_MODIFIERS.get() && Modifiers.weaponPool.isApplicable.test(stack);
+
+        if (isTool && isWeapon) {
+            // Randomly select one pool, if not drawn, use the other pool
+            ModifierPool firstPool = random.nextBoolean() ? Modifiers.toolPool : Modifiers.weaponPool;
+            ModifierPool secondPool = (firstPool == Modifiers.toolPool) ? Modifiers.weaponPool : Modifiers.toolPool;
+            
+            Modifier modifier = firstPool.roll(stack, random);
+            return modifier != null ? modifier : secondPool.roll(stack, random);
+        }
+        if (isTool) return Modifiers.toolPool.roll(stack, random);
+        if (isWeapon) return Modifiers.weaponPool.roll(stack, random);
+
+        if (Modifiers.armorPool.isApplicable.test(stack)) return Modifiers.armorPool.roll(stack, random);
         if (Modifiers.bowPool.isApplicable.test(stack)) return Modifiers.bowPool.roll(stack, random);
         if (Modifiers.shieldPool.isApplicable.test(stack)) return Modifiers.shieldPool.roll(stack, random);
-        if (Modifiers.armorPool.isApplicable.test(stack)) return Modifiers.armorPool.roll(stack, random);
-        if (Modifiers.weaponPool.isApplicable.test(stack)) return Modifiers.weaponPool.roll(stack, random);
         return null;
     }
 
